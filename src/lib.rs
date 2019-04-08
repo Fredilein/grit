@@ -14,9 +14,10 @@ pub struct GitRepository {
 }
 
 impl GitRepository {
-    pub fn new(path: &String) -> Result<GitRepository, &'static String> {
+    pub fn new(path: &str) -> Result<GitRepository, &'static String> {
         let worktree = Path::new(&path).to_path_buf();
-        let gitdir = Path::new(&format!("{}{}", path, "/.git")).to_path_buf();
+        let mut gitdir = worktree.clone();
+        gitdir.push(".git");
         
         Ok(GitRepository{ worktree, gitdir })
     }
@@ -46,10 +47,29 @@ fn repo_dir(repo: &GitRepository, path: Vec<&str>, mkdir: bool) -> PathBuf {
         abs_path
     } else {
         // TODO: abs_path could exist but not a dir => ?!?
-        // Right now, dir is created anyway, MKDIR is useless!
+        // Right now, dir is created anyway, mkdir is useless!
         create_dir_all(abs_path.to_str().unwrap()).unwrap();
         abs_path
     }
+}
+
+fn repo_find(path: &PathBuf) -> Option<Box<GitRepository>> {
+    let mut find_in_path = path.clone();
+    while find_in_path != PathBuf::from("/") {
+        find_in_path.push(".git");
+        if find_in_path.exists() {
+            find_in_path.pop();
+            let repo = Some(Box::new(
+                    GitRepository::new(&find_in_path.to_str().unwrap())
+                    .unwrap()
+                ));
+            println!("repo found: {:?}", repo);
+            return repo;
+        }
+        find_in_path.pop();
+        find_in_path.pop();
+    }
+    None
 }
 
 /// Create new git repository in path
