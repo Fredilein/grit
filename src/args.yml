@@ -1,0 +1,26 @@
+name: grit
+version: "0.1"
+author: Adi <apps@adizan.ga>
+about: git in rust
+args:
+    - verbose:
+        short: v
+        multiple: true
+        help: Sets the level of verbosity
+subcommands:
+    - init:
+        about: Initialize empty git repository
+        args:
+            - debug:
+                short: d
+                help: Print debug information
+    - add:
+        args:
+          - title:
+              help: Item title
+              required: true
+    - rm:
+        args:
+          - id:
+              help: Item id. Show IDs with ls
+              required: true
