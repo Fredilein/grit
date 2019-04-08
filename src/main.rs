@@ -5,7 +5,6 @@ extern crate clap;
 
 use clap::App;
 use grit;
-use grit::GitRepository;
 
 
 fn main() {
@@ -24,7 +23,9 @@ fn main() {
                 into_owned();
             current_path.pop();     // Remove '\n'
 
-            let repo = GitRepository::init(&current_path);
+            // let repo = GitRepository::new(&current_path, false);
+            // println!("{:?}", repo);
+            let repo = grit::repo_create(&current_path);
             println!("{:?}", repo);
         }
         None         => println!("see `cr --help` for commands"),
