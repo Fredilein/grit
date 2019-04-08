@@ -5,6 +5,7 @@ extern crate clap;
 
 use clap::App;
 use grit;
+use grit::GitRepository;
 
 
 fn main() {
@@ -23,10 +24,13 @@ fn main() {
                 into_owned();
             current_path.pop();     // Remove '\n'
 
-            // let repo = GitRepository::new(&current_path, false);
-            // println!("{:?}", repo);
-            let repo = grit::repo_create(&current_path);
-            println!("{:?}", repo);
+            let repo = GitRepository::new(&current_path).unwrap();
+            if repo.gitdir.is_dir() {
+                println!("This is already a git repository");
+            } else {
+                grit::repo_create(&repo, &current_path);
+                println!("Git repository created!");
+            }
         }
         None         => println!("see `cr --help` for commands"),
         _            => println!("Not a valid command. see `cr --help`"),
