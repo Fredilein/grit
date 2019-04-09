@@ -1,7 +1,4 @@
 use std::process::Command;
-use std::path::Path;
-use std::path::PathBuf;
-
 #[macro_use]
 extern crate clap;
 
@@ -41,6 +38,7 @@ fn main() {
     }
 
 }
+
 
 // better if it would return path
 fn get_current_path() -> Box<String> {

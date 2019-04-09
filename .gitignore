@@ -1,3 +1,5 @@
 /target
 **/*.rs.bk
 **.swp
+/src/.main.rs.swp
+/src/.lib.rs.swp

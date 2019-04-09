@@ -1,5 +1,4 @@
-use std::path::Path;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::fs::create_dir_all;
 use std::fs;
 
@@ -35,6 +34,7 @@ fn repo_path(repo: &GitRepository, path: Vec<&str>) -> PathBuf {
 }
 
 fn repo_file(repo: &GitRepository, path: Vec<&str>, mkdir: bool) -> PathBuf {
+    // TODO: mkdir unused, might be implemented or removed later
     let mut parents = path.clone();
     parents.pop();
     repo_dir(&repo, parents, mkdir);    // creates missing dirs if needed
@@ -42,20 +42,21 @@ fn repo_file(repo: &GitRepository, path: Vec<&str>, mkdir: bool) -> PathBuf {
 }
 
 fn repo_dir(repo: &GitRepository, path: Vec<&str>, mkdir: bool) -> PathBuf {
+    // mkdir also unused...
     let abs_path = repo_path(&repo, path);
     if abs_path.is_dir() {
         abs_path
     } else {
-        // TODO: abs_path could exist but not a dir => ?!?
-        // Right now, dir is created anyway, mkdir is useless!
+        // TODO: abs_path could exist but not a dir => ?!?. Prob panic upon creation
         create_dir_all(abs_path.to_str().unwrap()).unwrap();
         abs_path
     }
 }
 
 pub fn repo_find(path: &String) -> Option<Box<GitRepository>> {
+    // Searches for a .git folder in path or parent directory (until root dir).
+    // TODO: Remove pub, is only for testing
     let mut find_in_path = Path::new(&path).to_path_buf();
-    // let mut find_in_path = path.clone();
     while find_in_path != PathBuf::from("/") {
         find_in_path.push(".git");
         if find_in_path.exists() {
