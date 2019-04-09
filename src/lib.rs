@@ -53,7 +53,7 @@ fn repo_dir(repo: &GitRepository, path: Vec<&str>, mkdir: bool) -> PathBuf {
     }
 }
 
-fn repo_find(path: &PathBuf) -> Option<Box<GitRepository>> {
+pub fn repo_find(path: &PathBuf) -> Option<Box<GitRepository>> {
     let mut find_in_path = path.clone();
     while find_in_path != PathBuf::from("/") {
         find_in_path.push(".git");
