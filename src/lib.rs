@@ -47,6 +47,9 @@ fn repo_dir(repo: &Repository, path: Vec<&str>, mkdir: bool) -> PathBuf {
     if abs_path.is_dir() {
         abs_path
     } else {
+        if !mkdir {
+            return PathBuf::from("/");
+        }
         // TODO: abs_path could exist but not a dir => ?!?. Prob panic upon creation
         create_dir_all(abs_path.to_str().unwrap()).unwrap();
         abs_path

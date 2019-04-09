@@ -19,9 +19,9 @@ fn main() {
         Some("add")  => {
             let current_path = get_current_path();
             let repo = Repository::new(&current_path).unwrap();
-            let sha = "abc12de23fg";
+            let sha = "abcdenc";
             object::object_read(&repo, &sha);
-        }
+        },
         Some("init") => {
             let current_path = get_current_path();
 
