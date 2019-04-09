@@ -1,5 +1,6 @@
 use std::process::Command;
 use std::path::Path;
+use std::path::PathBuf;
 
 #[macro_use]
 extern crate clap;
@@ -31,9 +32,9 @@ fn main() {
             // not working at all
             // ==> repo_find and GitRepo should have same path type (str or pathbuf)
             //
-            // let current_path = get_current_path();
-            // let repo = grit::repo_find(Path::new(&current_path).to_path_buf());
-            // println!("repo at: {:?}", repo);
+            let current_path = get_current_path();
+            let repo = grit::repo_find(&current_path);
+            println!("Repo found: {:?}", repo);
         }
         None         => println!("see `cr --help` for commands"),
         _            => println!("Not a valid command. see `cr --help`"),
