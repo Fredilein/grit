@@ -20,7 +20,6 @@ subcommands:
         args:
           - title:
               help: Item title
-              required: true
     - rm:
         args:
           - id:

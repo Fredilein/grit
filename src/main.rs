@@ -1,10 +1,13 @@
 use std::process::Command;
+
 #[macro_use]
 extern crate clap;
-
 use clap::App;
+
 use grit;
-use grit::GitRepository;
+use grit::Repository;
+
+mod object;
 
 
 fn main() {
@@ -13,11 +16,16 @@ fn main() {
     let matches = App::from_yaml(possible_args).get_matches();
 
     match matches.subcommand_name() {
-        Some("add")  => println!("Add a file..."),
+        Some("add")  => {
+            let current_path = get_current_path();
+            let repo = Repository::new(&current_path).unwrap();
+            let sha = "abc12de23fg";
+            object::object_read(&repo, &sha);
+        }
         Some("init") => {
             let current_path = get_current_path();
 
-            let repo = GitRepository::new(&current_path).unwrap();
+            let repo = Repository::new(&current_path).unwrap();
             if repo.gitdir.is_dir() {
                 println!("This is already a git repository");
             } else {

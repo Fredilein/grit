@@ -7,24 +7,24 @@ use ini::Ini;
 
 
 #[derive(Debug)]
-pub struct GitRepository {
+pub struct Repository {
     pub worktree: PathBuf,
     pub gitdir: PathBuf,
 }
 
-impl GitRepository {
-    pub fn new(path: &str) -> Result<GitRepository, &'static String> {
+impl Repository {
+    pub fn new(path: &str) -> Result<Repository, &'static String> {
         let worktree = Path::new(&path).to_path_buf();
         let mut gitdir = worktree.clone();
         gitdir.push(".git");
         
-        Ok(GitRepository{ worktree, gitdir })
+        Ok(Repository{ worktree, gitdir })
     }
 }
 
 
-fn repo_path(repo: &GitRepository, path: Vec<&str>) -> PathBuf {
-    // Returns absolute path of (multiple) folder relative to the gitdir of the repo
+fn repo_path(repo: &Repository, path: Vec<&str>) -> PathBuf {
+    // Appends folders in `path` to `repo.gitdir`
     let mut abs_path = repo.gitdir.clone();
     for d in &path {
         abs_path.push(d);
@@ -33,7 +33,7 @@ fn repo_path(repo: &GitRepository, path: Vec<&str>) -> PathBuf {
     
 }
 
-fn repo_file(repo: &GitRepository, path: Vec<&str>, mkdir: bool) -> PathBuf {
+pub fn repo_file(repo: &Repository, path: Vec<&str>, mkdir: bool) -> PathBuf {
     // TODO: mkdir unused, might be implemented or removed later
     let mut parents = path.clone();
     parents.pop();
@@ -41,7 +41,7 @@ fn repo_file(repo: &GitRepository, path: Vec<&str>, mkdir: bool) -> PathBuf {
     repo_path(&repo, path)
 }
 
-fn repo_dir(repo: &GitRepository, path: Vec<&str>, mkdir: bool) -> PathBuf {
+fn repo_dir(repo: &Repository, path: Vec<&str>, mkdir: bool) -> PathBuf {
     // mkdir also unused...
     let abs_path = repo_path(&repo, path);
     if abs_path.is_dir() {
@@ -53,7 +53,7 @@ fn repo_dir(repo: &GitRepository, path: Vec<&str>, mkdir: bool) -> PathBuf {
     }
 }
 
-pub fn repo_find(path: &String) -> Option<Box<GitRepository>> {
+pub fn repo_find(path: &String) -> Option<Box<Repository>> {
     // Searches for a .git folder in path or parent directory (until root dir).
     // TODO: Remove pub, is only for testing
     let mut find_in_path = Path::new(&path).to_path_buf();
@@ -62,7 +62,7 @@ pub fn repo_find(path: &String) -> Option<Box<GitRepository>> {
         if find_in_path.exists() {
             find_in_path.pop();
             let repo = Some(Box::new(
-                    GitRepository::new(&find_in_path.to_str().unwrap())
+                    Repository::new(&find_in_path.to_str().unwrap())
                     .unwrap()
                 ));
             return repo;
@@ -73,8 +73,10 @@ pub fn repo_find(path: &String) -> Option<Box<GitRepository>> {
     None
 }
 
-/// Create new git repository in path
-pub fn repo_create(repo :&GitRepository, path: &String) {
+/// Create new git repository in path. Repository object needs to be provided, this function
+/// just creates the necessary dirs and files.
+/// ! Should not be called in existing repo, might overwrite files (TODO)
+pub fn repo_create(repo :&Repository, path: &String) {
     repo_dir(&repo, vec!["branches"], true);
     repo_dir(&repo, vec!["objects"], true);
     repo_dir(&repo, vec!["refs", "tags"], true);
