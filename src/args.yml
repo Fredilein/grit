@@ -6,22 +6,11 @@ args:
     - verbose:
         short: v
         multiple: true
-        help: Sets the level of verbosity
+        help: Sets the level of verbosity, not implemented yet tbh
 subcommands:
     - init:
         about: Initialize empty git repository
-        args:
-            - debug:
-                short: d
-                help: Print debug information
     - find:
-        about: Test
+        about: Find git repo in this dir or one of it's parent dirs
     - test:
-        args:
-          - title:
-              help: Item title
-    - rm:
-        args:
-          - id:
-              help: Item id. Show IDs with ls
-              required: true
+        about: For testing, functionality can be arbitrary
