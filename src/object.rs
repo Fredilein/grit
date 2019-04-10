@@ -6,18 +6,41 @@ use flate2::read::ZlibDecoder;
 
 use std::fs;
 
-use grit::Repository;
+use grit::GitRepository;
 use grit;
 
 
 
-#[derive(Debug)]
-pub struct Object {
-    repo: &'static Repository,
+// #[derive(Debug)]
+// pub struct GitObject {
+//     repo: &'static GitRepository,
+// }
+
+
+pub trait Object {
+    fn serialize(&self) -> &String;
+    fn deserialize(&mut self, data: String);
 }
 
-pub fn object_read(repo: &Repository, sha: &str) {
-    // Read object from Repository. Return Object whose exact type depends on the object...
+
+
+pub struct GitBlob {
+    blob_data: String,
+}
+
+impl Object for GitBlob {
+    fn serialize(&self) -> &String {
+        &self.blob_data
+    }
+    fn deserialize(&mut self, data: String) {
+        self.blob_data = data;
+    }
+}
+
+
+
+pub fn object_read(repo: &GitRepository, sha: &str) {
+    // Read object from GitRepository. Return Object whose exact type depends on the object...
     let dir = &sha[..2];
     let file = &sha[2..];
     // Assume object exists. (Actually an assumption in example as well ?!?)
@@ -58,6 +81,18 @@ pub fn object_read(repo: &Repository, sha: &str) {
 
     // TODO: Construct and return object depending on `object_type`
 
+}
+
+
+fn object_write<T: Object>(object: T, actually_write: bool){
+    // TODO
+}
+
+
+fn object_find<'a>(repo: &GitRepository, name: &'a str) -> &'a str {
+    // Return object from hash / short hash / tag / ...
+    // TODO
+    name
 }
 
 

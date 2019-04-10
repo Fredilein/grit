@@ -5,7 +5,7 @@ extern crate clap;
 use clap::App;
 
 use grit;
-use grit::Repository;
+use grit::GitRepository;
 
 mod object;
 
@@ -18,14 +18,14 @@ fn main() {
     match matches.subcommand_name() {
         Some("add")  => {
             let current_path = get_current_path();
-            let repo = Repository::new(&current_path).unwrap();
+            let repo = GitRepository::new(&current_path).unwrap();
             let sha = "abcdenc";
             object::object_read(&repo, &sha);
         },
         Some("init") => {
             let current_path = get_current_path();
 
-            let repo = Repository::new(&current_path).unwrap();
+            let repo = GitRepository::new(&current_path).unwrap();
             if repo.gitdir.is_dir() {
                 println!("This is already a git repository");
             } else {
