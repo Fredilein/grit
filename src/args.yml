@@ -16,7 +16,7 @@ subcommands:
                 help: Print debug information
     - find:
         about: Test
-    - add:
+    - test:
         args:
           - title:
               help: Item title

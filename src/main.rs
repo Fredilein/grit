@@ -16,7 +16,7 @@ fn main() {
     let matches = App::from_yaml(possible_args).get_matches();
 
     match matches.subcommand_name() {
-        Some("add")  => {
+        Some("test")  => {
             let current_path = get_current_path();
             let repo = GitRepository::new(&current_path).unwrap();
             let sha = "abcdenc";
