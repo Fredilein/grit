@@ -11,12 +11,6 @@ use grit;
 
 
 
-// #[derive(Debug)]
-// pub struct GitObject {
-//     repo: &'static GitRepository,
-// }
-
-
 pub trait Object {
     fn serialize(&self) -> &String;
     fn deserialize(&mut self, data: String);

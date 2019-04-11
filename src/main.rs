@@ -34,9 +34,6 @@ fn main() {
             }
         },
         Some("find") => {
-            // not working at all
-            // ==> repo_find and GitRepo should have same path type (str or pathbuf)
-            //
             let current_path = get_current_path();
             let repo = grit::repo_find(&current_path);
             println!("Repo found: {:?}", repo);
