@@ -1,17 +1,19 @@
-use std::process::Command;
-
 #[macro_use]
 extern crate clap;
-use clap::App;
-
-use grit;
-use grit::GitRepository;
 
 mod object;
+mod repo;
+
+use clap::App;
+
+use std::process::Command;
+
+use crate::repo::{GitRepository, repo_find, repo_create};
+
 
 
 fn main() {
-
+    // TODO: call run function which returns Result, clean main()
     let possible_args = load_yaml!("args.yml");
     let matches = App::from_yaml(possible_args).get_matches();
 
@@ -29,13 +31,13 @@ fn main() {
             if repo.gitdir.is_dir() {
                 println!("This is already a git repository");
             } else {
-                grit::repo_create(&repo, &current_path);
+                repo_create(&repo, &current_path);
                 println!("Git repository created!");
             }
         },
         Some("find") => {
             let current_path = get_current_path();
-            let repo = grit::repo_find(&current_path);
+            let repo = repo_find(&current_path);
             println!("Repo found: {:?}", repo);
         }
         None         => println!("see `cr --help` for commands"),
@@ -44,9 +46,8 @@ fn main() {
 
 }
 
-
-// better if it would return path
 fn get_current_path() -> Box<String> {
+    // better if it would return path
     let pwd = Command::new("pwd")
         .output()
         .unwrap();

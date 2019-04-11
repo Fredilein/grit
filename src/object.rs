@@ -1,21 +1,17 @@
 extern crate flate2;
 
+use std::fs::read_to_string;
 use std::io::prelude::*;
-use std::str;
+
 use flate2::read::ZlibDecoder;
 
-use std::fs;
-
-use grit::GitRepository;
-use grit;
-
+use crate::repo::{GitRepository, repo_file};
 
 
 pub trait Object {
     fn serialize(&self) -> &String;
     fn deserialize(&mut self, data: String);
 }
-
 
 
 pub struct GitBlob {
@@ -32,18 +28,17 @@ impl Object for GitBlob {
 }
 
 
-
 pub fn object_read(repo: &GitRepository, sha: &str) {
     // Read object from GitRepository. Return Object whose exact type depends on the object...
     let dir = &sha[..2];
     let file = &sha[2..];
     // Assume object exists. (Actually an assumption in example as well ?!?)
-    let path = grit::repo_file(&repo, vec!["objects", dir, file], false);
+    let path = repo_file(&repo, vec!["objects", dir, file], false);
 
     println!("Reading from file: {:?}", path);
 
     // decode `path` and read to string
-    let data = fs::read_to_string(&path).expect("Unable to read from file");
+    let data = read_to_string(&path).expect("Unable to read from file");
     let mut decoded = ZlibDecoder::new(data.as_bytes());
     let mut decoded_string = String::new();     // tut: raw
     println!("Decoded: {:?}", decoded);
@@ -77,11 +72,9 @@ pub fn object_read(repo: &GitRepository, sha: &str) {
 
 }
 
-
 fn object_write<T: Object>(object: T, actually_write: bool){
     // TODO
 }
-
 
 fn object_find<'a>(repo: &GitRepository, name: &'a str) -> &'a str {
     // Return object from hash / short hash / tag / ...
